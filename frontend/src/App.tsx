@@ -17,7 +17,7 @@ function App() {
   const moodFaces = ['😢', '😟', '😐', '🙂', '😀']
   const moodWords = ['Bad', 'Low', 'Okay', 'Good', 'Great']
   const [env, setEnv] = useState('spacecraft')
-  const autoRange = (values, decimals) => {
+  const autoRange = (values: number[], decimals: number) => {
     const lo = Math.min(...values)
     const hi = Math.max(...values)
     const span = hi - lo
@@ -59,7 +59,7 @@ function App() {
   }
   // Stardate 41000 = the Enterprise-D's first year (2364); each year adds 1000.
   const now = new Date()
-  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000)
+  const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000)
   const stardate = (41000 + (now.getFullYear() - 2024) * 1000 + (dayOfYear / 365) * 1000).toFixed(1)
   const signalDelay = env === 'spacecraft' ? 'Signal to Earth: about 12 minutes each way' : 'Signal to Earth: under 1 second'
   const [showTea, setShowTea] = useState(false)
@@ -149,7 +149,7 @@ function App() {
     }
   }
 
-  async function logMood(value) {
+  async function logMood(value: number) {
     try {
       const response = await fetch('http://localhost:8000/mood', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ value }) })
       const data = await response.json()
