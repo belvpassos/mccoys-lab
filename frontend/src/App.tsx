@@ -65,6 +65,7 @@ function App() {
   const [showTea, setShowTea] = useState(false)
   const [alertDismissed, setAlertDismissed] = useState(false)
   const [vitalsMenuOpen, setVitalsMenuOpen] = useState(false)
+  const [backendDown, setBackendDown] = useState(false)
 
   useEffect(() => {
     const load = () => {
@@ -93,13 +94,38 @@ function App() {
           if (Array.isArray(data.mood) && data.mood.length > 0) {
             setMoodSeries(data.mood)
           }
+          setBackendDown(false)
         })
-        .catch(() => {})
+        .catch(() => {
+          setBackendDown(true)
+        })
     }
     load()
     const timer = setInterval(load, 15000)
     return () => clearInterval(timer)
   }, [])
+
+  // No back end (e.g. the Vercel preview): simulate the sensor in the browser
+  // so the chart keeps moving. When the back end answers again, load() turns
+  // this off and the real series takes over.
+  useEffect(() => {
+    if (!backendDown) {
+      return
+    }
+    const tick = () => {
+      const hr = Math.floor(Math.random() * 11) + 68
+      setReadings((prev) => [...prev.slice(-59), hr])
+      setHeartRate(hr)
+      setAlertDismissed(false)
+      setTempSeries((prev) => [...prev.slice(-59), Math.round((36.4 + Math.random() * 0.3) * 10) / 10])
+      setPressureSeries((prev) => [...prev.slice(-59), Math.floor(Math.random() * 5) + 118])
+      setOxygenSeries((prev) => [...prev.slice(-59), Math.floor(Math.random() * 3) + 97])
+      setSugarSeries((prev) => [...prev.slice(-59), Math.floor(Math.random() * 21) + 90])
+    }
+    tick()
+    const timer = setInterval(tick, 15000)
+    return () => clearInterval(timer)
+  }, [backendDown])
 
   useEffect(() => {
     if (!showTea) {
