@@ -36,7 +36,7 @@ function App() {
     oxygen: { title: 'Oxygenation over time', values: oxygenSeries.slice(-10), xLabel: 'last 10 readings', alertAt: null, desc: 'Blood oxygen saturation in percent, last 10 readings.', color: '#9966cc', unit: '%', xAxis: 'reading', ...autoRange(oxygenSeries.slice(-10), 0) },
     sugar: { title: 'Blood sugar over time', values: sugarSeries.slice(-10), xLabel: 'last 10 readings', alertAt: null, desc: 'Blood sugar in mg/dL, last 10 readings.', color: '#66cc99', unit: 'mg/dL', xAxis: 'reading', ...autoRange(sugarSeries.slice(-10), 0) },
     mood: { title: 'Mood over time', values: moodSeries.slice(-10), min: 1, max: 5, yLabels: [5, 3, 1], xLabel: 'last 10 check-ins', alertAt: null, desc: 'Mood check-ins, 1 (low) to 5 (great). Tap a face above to log how you feel.', color: '#ff9966', unit: '1–5', xAxis: 'check-in' },
-  }[selected]
+  }[selected]!
   const chartPoints = chartConfig.values.map((value, index) => `${30 + (index * 260) / Math.max(chartConfig.values.length - 1, 1)},${120 - ((value - chartConfig.min) / (chartConfig.max - chartConfig.min)) * 100}`).join(' ')
   const vitals = [
     { key: 'heart', label: 'Resting heart rate', value: `${heartRate} bpm`, color: env === 'spacecraft' ? '#66cccc' : '#ff9c00' },
@@ -306,7 +306,7 @@ function App() {
                   )
                 ))}
                 </g>
-                {chartConfig.values.map((value, index) => (
+                {chartConfig.values.map((_, index) => (
                   <text key={index} x={30 + (index * 260) / Math.max(chartConfig.values.length - 1, 1)} y="135" fontSize="8" fill="#b8b8cc" textAnchor="middle">{index + 1}</text>
                 ))}
                 <text x="160" y="157" fontSize="8" fill="#b8b8cc" textAnchor="middle">{chartConfig.xAxis}</text>
